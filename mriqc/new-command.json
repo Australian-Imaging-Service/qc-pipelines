@@ -1,0 +1,160 @@
+{
+    "name": "bids-mriqc",
+    "description": "Runs the MRIQC BIDS App",
+    "version": "1.1",
+    "schema-version": "1.0",
+    "image": "poldracklab/mriqc:0.15.2",
+    "type": "docker",
+    "command-line": "mriqc /input /output participant group --no-sub -w /work -v #FLAGS#",
+    "override-entrypoint": true,
+    "mounts": [
+        {
+            "name": "in",
+            "writable": false,
+            "path": "/input"
+        },
+        {
+            "name": "out",
+            "writable": true,
+            "path": "/output"
+        },
+        {
+            "name": "work",
+            "writable": true,
+            "path": "/work"
+        }
+    ],
+    "environment-variables": {},
+    "ports": {},
+    "inputs": [
+        {
+            "name": "flags",
+            "label": "MRIQC flags",
+            "description": "Flags to pass to MRIQC",
+            "type": "string",
+            "matcher": null,
+            "default-value": "",
+            "required": false,
+            "replacement-key": "#FLAGS#",
+            "sensitive": false,
+            "command-line-flag": null,
+            "command-line-separator": null,
+            "true-value": null,
+            "false-value": null
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output",
+            "description": "Output QC files",
+            "required": true,
+            "mount": "out",
+            "path": null,
+            "glob": null
+        },
+        {
+            "name": "working",
+            "description": "Working QC files",
+            "required": true,
+            "mount": "work",
+            "path": null,
+            "glob": null
+        }
+    ],
+    "xnat": [
+        {
+            "name": "bids-mriqc-project",
+            "label": null,
+            "description": "Run the MRIQC BIDS App with a project mounted",
+            "contexts": [
+                "xnat:projectData"
+            ],
+            "external-inputs": [
+                {
+                    "name": "project",
+                    "label": null,
+                    "description": "Project",
+                    "type": "Project",
+                    "matcher": null,
+                    "default-value": null,
+                    "required": true,
+                    "replacement-key": null,
+                    "sensitive": null,
+                    "provides-value-for-command-input": null,
+                    "provides-files-for-command-mount": "in",
+                    "via-setup-command": "radiologicskate/xnat2bids-setup:1.3:xnat2bids",
+                    "user-settable": null,
+                    "load-children": false
+                }
+            ],
+            "derived-inputs": [],
+            "output-handlers": [
+                {
+                    "name": "output-resource",
+                    "accepts-command-output": "output",
+                    "via-wrapup-command": null,
+                    "as-a-child-of": "project",
+                    "type": "Resource",
+                    "label": "MRIQC",
+                    "format": null
+                },
+                {
+                    "name": "working-resource",
+                    "accepts-command-output": "working",
+                    "via-wrapup-command": null,
+                    "as-a-child-of": "project",
+                    "type": "Resource",
+                    "label": "MRIQC-wrk",
+                    "format": null
+                }
+            ]
+        },
+        {
+            "name": "bids-mriqc-session",
+            "label": null,
+            "description": "Run the MRIQC BIDS App with a session mounted",
+            "contexts": [
+                "xnat:imageSessionData"
+            ],
+            "external-inputs": [
+                {
+                    "name": "session",
+                    "label": null,
+                    "description": "Input session",
+                    "type": "Session",
+                    "matcher": null,
+                    "default-value": null,
+                    "required": true,
+                    "replacement-key": null,
+                    "sensitive": null,
+                    "provides-value-for-command-input": null,
+                    "provides-files-for-command-mount": "in",
+                    "via-setup-command": "radiologicskate/xnat2bids-setup:1.3:xnat2bids",
+                    "user-settable": null,
+                    "load-children": false
+                }
+            ],
+            "derived-inputs": [],
+            "output-handlers": [
+                {
+                    "name": "output-resource",
+                    "accepts-command-output": "output",
+                    "via-wrapup-command": null,
+                    "as-a-child-of": "session",
+                    "type": "Resource",
+                    "label": "MRIQC",
+                    "format": null
+                },
+                {
+                    "name": "working-resource",
+                    "accepts-command-output": "working",
+                    "via-wrapup-command": null,
+                    "as-a-child-of": "session",
+                    "type": "Resource",
+                    "label": "MRIQC-wrk",
+                    "format": null
+                }
+            ]
+        }
+    ]
+}
